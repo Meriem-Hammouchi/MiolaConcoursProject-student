@@ -3,11 +3,14 @@ package org.miolacnc.services;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Base64;
 
 import org.miolacnc.dto.DossierCandidatureRequestDto;
 import org.miolacnc.dto.DossierCandidatureResponseDto;
 import org.miolacnc.models.DossierCandidatureEntity;
+import org.miolacnc.models.StudentFiles;
 import org.miolacnc.repository.DossierCandidatureRepository;
+import org.miolacnc.repository.StudentFilesRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,9 @@ public class DossierCandidatureService {
 
 	@Autowired
 	DossierCandidatureRepository repository;
+	
+	@Autowired
+	StudentFilesRepository studentRepository;
 	
 	// function calculeNote
 		private float calculeNoteAffectee(@RequestBody DossierCandidatureRequestDto requestDto) {
@@ -36,25 +42,23 @@ public class DossierCandidatureService {
 
 			try {
 				// creation de dossier candidature de chaque etudiant
-				String path = ".\\dossierscandidatures\\" + dossierCondidature.getCin() + "\\";
-
 				dossierCondidature.setNoteAffectee(dossierCondidature.getNoteLicence());
-				dossierCondidature.setPath(path);
+
+				StudentFiles files = new StudentFiles();
+				files.setCinFile(Base64.getEncoder().encodeToString(requestDto.getCinFile().getBytes()));
+				files.setDeugFile(Base64.getEncoder().encodeToString(requestDto.getDeugFile().getBytes()));
+				files.setLicenceFile(Base64.getEncoder().encodeToString(requestDto.getLicenceFile().getBytes()));
+				files.setPreinscriptionFile(Base64.getEncoder().encodeToString(requestDto.getPreinscriptionFile().getBytes()));
+				files.setSemestre1(Base64.getEncoder().encodeToString(requestDto.getSemestre1File().getBytes()));
+				files.setSemestre2(Base64.getEncoder().encodeToString(requestDto.getSemestre2File().getBytes()));
+				files.setSemestre3(Base64.getEncoder().encodeToString(requestDto.getSemestre3File().getBytes()));
+				files.setSemestre4(Base64.getEncoder().encodeToString(requestDto.getSemestre4File().getBytes()));
+				files.setSemestre5(Base64.getEncoder().encodeToString(requestDto.getSemestre5File().getBytes()));
+				files.setSemestre6(Base64.getEncoder().encodeToString(requestDto.getSemestre6File().getBytes()));
+				
+				studentRepository.save(files);
+				dossierCondidature.setFichiers(files);
 				dossierCondidature = repository.save(dossierCondidature);
-
-				Files.createDirectory(Paths.get(path));
-
-				// copier les fichiers pdf dans le dossier de candidature
-				Files.copy(requestDto.getSemestre1File().getInputStream(), Paths.get(path + "semestre1.pdf"));
-				Files.copy(requestDto.getSemestre2File().getInputStream(), Paths.get(path + "semestre2.pdf"));
-				Files.copy(requestDto.getSemestre3File().getInputStream(), Paths.get(path + "semestre3.pdf"));
-				Files.copy(requestDto.getSemestre4File().getInputStream(), Paths.get(path + "semestre4.pdf"));
-				Files.copy(requestDto.getSemestre5File().getInputStream(), Paths.get(path + "semestre5.pdf"));
-				Files.copy(requestDto.getSemestre6File().getInputStream(), Paths.get(path + "semestre6.pdf"));
-				Files.copy(requestDto.getPreinscriptionFile().getInputStream(), Paths.get(path + "PreinscriptionFile.pdf"));
-				Files.copy(requestDto.getCinFile().getInputStream(), Paths.get(path + "cinFile.pdf"));
-				Files.copy(requestDto.getDeugFile().getInputStream(), Paths.get(path + "deugFile.pdf"));
-				Files.copy(requestDto.getLicenceFile().getInputStream(), Paths.get(path + "licenceFile.pdf"));
 
 			} catch (IOException e) {
 				throw new RuntimeException(e);

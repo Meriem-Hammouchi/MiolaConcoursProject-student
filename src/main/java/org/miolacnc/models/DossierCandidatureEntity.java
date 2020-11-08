@@ -2,8 +2,11 @@ package org.miolacnc.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity(name="DossierCandidature")
 public class DossierCandidatureEntity {
@@ -27,12 +30,6 @@ public class DossierCandidatureEntity {
 	 @Column(nullable = false)
      private boolean admis = false;
 	 
-	 public boolean isAdmis() {
-		return admis;
-	}
-	public void setAdmis(boolean admis) {
-		this.admis = admis;
-	}
 	@Column(nullable = false, length = 10)
 	 private float noteS1;
 	 
@@ -64,10 +61,11 @@ public class DossierCandidatureEntity {
 	 private float noteAffectee;
 	 
 	 @Column(nullable = false)
-     private String path;
-	 
-	 @Column(nullable = false)
      private long juryId;
+	 
+	 @OneToOne(fetch = FetchType.LAZY)
+	 @JoinColumn(name = "student_id")
+	 private StudentFiles fichiers;
      
 	 
 	public long getId() {
@@ -99,12 +97,6 @@ public class DossierCandidatureEntity {
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	public String getPath() {
-		return path;
-	}
-	public void setPath(String path) {
-		this.path = path;
 	}
 	public String getStatut() {
 		return statut;
@@ -172,5 +164,16 @@ public class DossierCandidatureEntity {
 	public void setJuryId(long juryId) {
 		this.juryId = juryId;
 	}
-	
+	public StudentFiles getFichiers() {
+		return fichiers;
+	}
+	public void setFichiers(StudentFiles fichiers) {
+		this.fichiers = fichiers;
+	}
+	 public boolean isAdmis() {
+		return admis;
+	}
+	public void setAdmis(boolean admis) {
+		this.admis = admis;
+	}
 }
