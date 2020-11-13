@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface DossierCandidatureRepository extends CrudRepository<DossierCandidatureEntity, Long> {
 
+	DossierCandidatureEntity findByCin(String cin);
+
 }

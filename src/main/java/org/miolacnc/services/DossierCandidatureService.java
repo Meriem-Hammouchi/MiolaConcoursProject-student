@@ -3,7 +3,9 @@ package org.miolacnc.services;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Optional;
 
 import org.miolacnc.dto.DossierCandidatureRequestDto;
 import org.miolacnc.dto.DossierCandidatureResponseDto;
@@ -14,6 +16,7 @@ import org.miolacnc.repository.StudentFilesRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
@@ -69,6 +72,6 @@ public class DossierCandidatureService {
 
 			return responseDto;
 		}
-
+		
 
 }

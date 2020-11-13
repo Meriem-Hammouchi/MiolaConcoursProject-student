@@ -13,8 +13,15 @@ public class DossierCandidatureResponseDto {
     private boolean admis;
     private float noteAffectee;
     private String statut;
+    private long studentId;
     
     
+	public long getStudentId() {
+		return studentId;
+	}
+	public void setStudentId(long studentId) {
+		this.studentId = studentId;
+	}
 	public long getId() {
 		return id;
 	}

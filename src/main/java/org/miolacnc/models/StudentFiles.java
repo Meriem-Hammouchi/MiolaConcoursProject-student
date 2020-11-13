@@ -66,6 +66,12 @@ public class StudentFiles {
 	public void setSemestre2(String semestre2) {
 		this.semestre2 = semestre2;
 	}
+	public long getStudent_id() {
+		return student_id;
+	}
+	public void setStudent_id(long student_id) {
+		this.student_id = student_id;
+	}
 	public String getSemestre3() {
 		return semestre3;
 	}
