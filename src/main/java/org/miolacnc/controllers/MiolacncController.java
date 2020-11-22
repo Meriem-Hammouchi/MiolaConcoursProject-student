@@ -23,6 +23,7 @@ public class MiolacncController {
 
     @Autowired
     private MiolacncService service;
+    
     @GetMapping("/EvsM")
     public List<Miolacnc> findAllServicesEv(){
         return service.getEvsM();

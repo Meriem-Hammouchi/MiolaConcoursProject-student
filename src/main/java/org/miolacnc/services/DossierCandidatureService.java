@@ -72,6 +72,106 @@ public class DossierCandidatureService {
 
 			return responseDto;
 		}
+		//===============================================================================================================
+
+		// function2: Download base64
+		public String getDossierCondidature(long studentId, String file) {
+				// 1- get StudentFiles for this user
+				// 2- find which file to return  using chemin
+				// 3- return the string
+				Optional<StudentFiles> studentFile = studentRepository.findById(studentId);
+				
+				if(studentFile.isPresent()) {
+					switch (file) {
+					case "semestre1":
+						return studentFile.get().getSemestre1();
+					case "semestre2":
+						return studentFile.get().getSemestre2();
+					case "semestre3":
+						return studentFile.get().getSemestre3();
+					case "semestre4":
+						return studentFile.get().getSemestre4();
+					case "semestre5":
+						return studentFile.get().getSemestre5();
+					case "semestre6":
+						return studentFile.get().getSemestre6();
+					case "PreinscriptionFile":
+						return studentFile.get().getSemestre6();
+					case "cinFile":
+						return studentFile.get().getSemestre1();
+					case "deugFile":
+						return studentFile.get().getSemestre1();
+					case "licenceFile":
+						return studentFile.get().getSemestre1();
+					default:
+						return " Veuillez saisir un nom valide !";
+					}
+				}
+				else {
+					return "Dossier de candidature introuvable";
+				}
+		}
 		
+		// fct: Retourn le statut de DC
+		public String getDossierCondidatureStatus(long dosCandId) {
+			Optional<DossierCandidatureEntity> dosCand = repository.findById(dosCandId);
+			if(dosCand.isPresent()) {
+				return dosCand.get().getStatut();
+			}else {
+				return "";
+			}
+		}
+
+		// function3: Data List
+		public Iterable<DossierCandidatureResponseDto> getListCondidature() {
+
+			Iterable<DossierCandidatureEntity> ListEntity = repository.findAll();
+			ArrayList<DossierCandidatureResponseDto> responseList = new ArrayList<DossierCandidatureResponseDto>();
+
+			for (DossierCandidatureEntity entity : ListEntity) {
+				// create an object of type DossierCandidatureResponseDto
+				DossierCandidatureResponseDto responseDto = new DossierCandidatureResponseDto();
+
+				// do copyproperties between the created object and entity
+				BeanUtils.copyProperties(entity, responseDto);
+				
+				responseDto.setStudentId(entity.getFichiers().getStudent_id());
+				// add the object to the responseList
+				responseList.add(responseDto);
+			}
+			return responseList;
+		}
+
+		public DossierCandidatureResponseDto ValiderDossierCandidature(String cin) {
+			DossierCandidatureEntity entity = repository.findByCin(cin);
+			if(entity != null) {
+				entity.setStatut("Valide");
+			}    
+			
+			DossierCandidatureEntity updatedEntity=repository.save(entity);
+			
+			DossierCandidatureResponseDto response = new DossierCandidatureResponseDto();
+			BeanUtils.copyProperties(updatedEntity, response);
+
+			return response;
+
+		}
+
+		public DossierCandidatureResponseDto RejeterDossierCandidature(@PathVariable String cin) {
+			DossierCandidatureEntity entity = repository.findByCin(cin);
+			if(entity != null) {
+				entity.setStatut("Rejected");
+				entity.setNoteAffectee(0);
+			}    
+			
+			DossierCandidatureEntity updatedEntity=repository.save(entity);
+			
+			DossierCandidatureResponseDto response = new DossierCandidatureResponseDto();
+			BeanUtils.copyProperties(updatedEntity, response);
+
+			return response;
+		}
+
+
 
 }
